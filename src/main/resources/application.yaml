@@ -1,0 +1,32 @@
+spring:
+  r2dbc:
+    url: r2dbc:mysql://localhost:3306/wgwg_auth
+    username: root
+    password: 1234
+  h2:
+    console:
+      enabled: true
+  application:
+    name: auth
+  data:
+    r2dbc:
+      repositories:
+        enabled: true
+
+kakao:
+  client_id: f8609808f0ad80f284bc679eb3d80315
+  redirect_uri: http://localhost:8080/login/oauth/kakao
+  KAUTH_TOKEN_URL_HOST: https://kauth.kakao.com
+  KAUTH_USER_URL_HOST: https://kapi.kakao.com
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+cors:
+  allowed-origins: "http://localhost:5173"
+  allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
+  allowed-headers: "*"
+  allow-credentials: true
