@@ -5,7 +5,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-import org.springframework.security.core.GrantedAuthority;
+//import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 import java.util.List;
@@ -26,7 +26,7 @@ public class Customer  {
     @Column("CUSTOMER_ADDRESS")
     private String customerAddress;
 
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(()->"ROLE_USER");
-    }
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return List.of(()->"ROLE_USER");
+//    }
 }

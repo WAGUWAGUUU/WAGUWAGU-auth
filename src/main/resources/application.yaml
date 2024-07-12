@@ -12,10 +12,12 @@ spring:
     r2dbc:
       repositories:
         enabled: true
+  main:
+    allow-bean-definition-overriding: true
 
 kakao:
   client_id: f8609808f0ad80f284bc679eb3d80315
-  redirect_uri: http://localhost:8080/login/oauth/kakao
+  redirect_uri: http://localhost:8080/callback
   KAUTH_TOKEN_URL_HOST: https://kauth.kakao.com
   KAUTH_USER_URL_HOST: https://kapi.kakao.com
 

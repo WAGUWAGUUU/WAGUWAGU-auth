@@ -21,11 +21,10 @@ public class JwtUtil {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-
     public String generateToken(Customer customer) {
         return Jwts.builder()
-                .setSubject(customer.getCustomerEmail())
                 .claim("id", customer.getCustomerId())
+                .claim("email", customer.getCustomerEmail())
                 .claim("nickname", customer.getCustomerNickname())
                 .claim("address", customer.getCustomerAddress())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
