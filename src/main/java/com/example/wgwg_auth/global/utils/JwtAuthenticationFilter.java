@@ -1,5 +1,6 @@
 package com.example.wgwg_auth.global.utils;
 
+import com.example.wgwg_auth.domain.entity.Customer;
 import com.example.wgwg_auth.domain.repository.CustomerRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,13 +29,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             String token = bearerToken.substring(7);
-            String email = jwtUtil.getEmailFromToken(token);
+            Customer customer = jwtUtil.getCustomerFromToken(token);
 
-            customerRepository.findByCustomerEmail(email).doOnNext(customer -> {
-//                UsernamePasswordAuthenticationToken authentication =
-//                        new UsernamePasswordAuthenticationToken(customer, null, customer.getAuthorities());
-//                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }).doOnTerminate(() -> {
+            customerRepository.findByCustomerEmail(customer.getCustomerEmail())
+                    .doOnTerminate(() -> {
                 try {
                     filterChain.doFilter(request, response);
                 } catch (IOException | ServletException e) {

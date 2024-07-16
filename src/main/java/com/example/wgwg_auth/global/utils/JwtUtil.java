@@ -1,6 +1,7 @@
 package com.example.wgwg_auth.global.utils;
 
 import com.example.wgwg_auth.domain.entity.Customer;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -41,12 +42,18 @@ public class JwtUtil {
         }
     }
 
-    public String getEmailFromToken(String token){
-        return Jwts.parserBuilder()
+    public Customer getCustomerFromToken(String token){
+        Claims payload = (Claims) Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
+
+
+        Long customerId = payload.get("id", Long.class);
+        String customerEmail = payload.get("email", String.class);
+        String customerNickname = payload.get("nickname", String.class);
+        String customerAddress = payload.get("address", String.class);
+        return new Customer(customerId, customerNickname, customerEmail, customerAddress);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.wgwg_auth.controller;
 
-import com.example.wgwg_auth.domain.dto.request.CustomerRequest;
+import com.example.wgwg_auth.domain.dto.request.CustomerSignInRequest;
+import com.example.wgwg_auth.domain.dto.response.CustomerSignInResponse;
 import com.example.wgwg_auth.service.CustomerService;
 import com.example.wgwg_auth.service.KakaoService;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +23,14 @@ public class KakaoLoginController {
         return kakaoService.getAccessTokenFromKakao(code)
                 .flatMap(accessToken -> kakaoService.getUserInfo(accessToken)
                         .flatMap(userInfo -> {
-                            // Process and save user info
-                            CustomerRequest request = new CustomerRequest(
+                            CustomerSignInRequest request = new CustomerSignInRequest(
                                     userInfo.getId(),
                                     userInfo.getKakaoAccount().getProfile().getNickName(),
                                     userInfo.getKakaoAccount().getEmail());
                             return customerService.saveCustomerInfo(request)
-                                    .thenReturn(ResponseEntity.ok(userInfo));
+                                    .map(CustomerSignInResponse::token)
+                                    .map(token -> ResponseEntity.ok(token));
                         })
                 );
     }
-
 }
