@@ -17,7 +17,10 @@ spring:
 
 kakao:
   client_id: f8609808f0ad80f284bc679eb3d80315
+#  redirect_uri: http://localhost:8080/callback
   redirect_uri: http://localhost:8080/callback
+  customer_redirect_uri: http://localhost:8080/customers/callback
+  client_secret: NKFpAlslFu6oPIMjJy3U4uwlP3oyO3Rj
   KAUTH_TOKEN_URL_HOST: https://kauth.kakao.com
   KAUTH_USER_URL_HOST: https://kapi.kakao.com
 

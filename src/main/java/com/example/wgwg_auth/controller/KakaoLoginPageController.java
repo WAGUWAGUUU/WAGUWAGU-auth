@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/login")
 public class KakaoLoginPageController {
 
+    @Value("${kakao.client_id}")
     private String client_id;
     @Value("${kakao.redirect_uri}")
     private String redirect_uri;

@@ -18,7 +18,7 @@ public class KakaoLoginController {
     private final KakaoService kakaoService;
     private final CustomerService customerService;
 
-    @GetMapping("/callback")
+    @GetMapping("customers/callback")
     public Mono<ResponseEntity<?>> callback(@RequestParam("code") String code) {
         return kakaoService.getAccessTokenFromKakao(code)
                 .flatMap(accessToken -> kakaoService.getUserInfo(accessToken)
