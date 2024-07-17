@@ -25,6 +25,10 @@ public class Customer  {
     private String customerEmail;
     @Column("CUSTOMER_ADDRESS")
     private String customerAddress;
+    @Column("CUSTOMER_LATITUDE")
+    private double customerLatitude;
+    @Column("CUSTOMER_LONGITUDE")
+    private double customerLongitude;
 
 //    public Collection<? extends GrantedAuthority> getAuthorities() {
 //        return List.of(()->"ROLE_USER");

@@ -1,8 +1,8 @@
 package com.example.wgwg_auth.service;
 
 import com.example.wgwg_auth.domain.dto.request.CustomerRequest;
-import com.example.wgwg_auth.domain.dto.request.CustomerSignInRequest;
-import com.example.wgwg_auth.domain.dto.response.CustomerSignInResponse;
+import com.example.wgwg_auth.domain.dto.request.UserSignInRequest;
+import com.example.wgwg_auth.domain.dto.response.UserSignInResponse;
 import com.example.wgwg_auth.domain.entity.Customer;
 import com.example.wgwg_auth.domain.repository.CustomerRepository;
 import com.example.wgwg_auth.global.utils.JwtUtil;
@@ -19,32 +19,32 @@ public class CustomerServiceImpl implements CustomerService {
     private final JwtUtil jwtUtil;
 
     @Override
-    public Mono<CustomerSignInResponse> saveCustomerInfo(CustomerSignInRequest request) {
-        return customerRepository.findByCustomerEmail(request.toEntity().getCustomerEmail())
+    public Mono<UserSignInResponse> saveCustomerInfo(UserSignInRequest request) {
+        return customerRepository.findByCustomerEmail(request.toCustomerEntity().getCustomerEmail())
                 .collectList()
                 .flatMap(customers -> {
                     if (customers.size() > 1) {
-                        log.error("Multiple customers found with the same email: " + request.toEntity().getCustomerEmail());
-                        return Mono.error(new RuntimeException("Non unique result for email: " + request.toEntity().getCustomerEmail()));
+                        log.error("Multiple customers found with the same email: " + request.toCustomerEntity().getCustomerEmail());
+                        return Mono.error(new RuntimeException("Non unique result for email: " + request.toCustomerEntity().getCustomerEmail()));
                     } else if (customers.size() == 1) {
                         Customer existingCustomer = customers.get(0);
                         log.info("Welcome back, " + existingCustomer.getCustomerNickname() + "!");
                         return getCustomerInfo(existingCustomer.getCustomerId())
                                 .flatMap(customer -> {
-                                    String token = jwtUtil.generateToken(customer);
-                                    CustomerSignInResponse response = CustomerSignInResponse.from(token);
+                                    String token = jwtUtil.generateCustomerToken(customer);
+                                    UserSignInResponse response = UserSignInResponse.from(token);
                                     log.info(response.token());
                                     return Mono.just(response);
                                 });
                     } else {
                         return customerRepository.insertIfNotExistAndReturn(
-                                        request.customerId(),
-                                        request.customerNickname(),
-                                        request.customerEmail()
-                                ).then(customerRepository.save(request.toEntity()))
+                                        request.userId(),
+                                        request.UserNickname(),
+                                        request.UserEmail()
+                                ).then(customerRepository.save(request.toCustomerEntity()))
                                 .flatMap(customer -> {
-                                    String token = jwtUtil.generateToken(customer);
-                                    CustomerSignInResponse response = CustomerSignInResponse.from(token);
+                                    String token = jwtUtil.generateCustomerToken(customer);
+                                    UserSignInResponse response = UserSignInResponse.from(token);
                                     log.info(response.token());
                                     return Mono.just(response);
                                 });
@@ -63,8 +63,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Mono<Customer> updateCustomerInfo(Long customerId, CustomerRequest request) {
-        return customerRepository.updateCustomerAddress(
-                customerId, request.customerNickname(),request.customerAddress())
+        return customerRepository.updateCustomerInfo(
+                customerId, request.toEntity().getCustomerNickname(),request.toEntity().getCustomerAddress(),
+                        request.toEntity().getCustomerLatitude(), request.toEntity().getCustomerLongitude())
                 .then(customerRepository.findById(customerId))
                 .doOnSuccess(customer -> log.info("Customer address updated successfully for customerId: " + customerId))
                 .doOnError(e -> log.error("Error updating customer address for customerId: " + customerId, e));

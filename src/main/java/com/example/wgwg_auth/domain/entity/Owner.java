@@ -21,4 +21,10 @@ public class Owner {
     private String ownerName;
     @Column("OWNER_EMAIL")
     private String ownerEmail;
+    @Column("OWNER_ADDRESS")
+    private String ownerAddress;
+    @Column("OWNER_LATITUDE")
+    private double ownerLatitude;
+    @Column("OWNER_LONGITUDE")
+    private double ownerLongitude;
 }

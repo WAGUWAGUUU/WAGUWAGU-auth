@@ -20,6 +20,8 @@ kakao:
 #  redirect_uri: http://localhost:8080/callback
   redirect_uri: http://localhost:8080/callback
   customer_redirect_uri: http://localhost:8080/customers/callback
+  owner_redirect_uri: http://localhost:8080/owners/callback
+  rider_redirect_uri: http://localhost:8080/riders/callback
   client_secret: NKFpAlslFu6oPIMjJy3U4uwlP3oyO3Rj
   KAUTH_TOKEN_URL_HOST: https://kauth.kakao.com
   KAUTH_USER_URL_HOST: https://kapi.kakao.com

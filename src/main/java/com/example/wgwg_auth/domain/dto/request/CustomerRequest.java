@@ -4,12 +4,16 @@ import com.example.wgwg_auth.domain.entity.Customer;
 
 public record CustomerRequest(
        String customerNickname,
-       String customerAddress
+       String customerAddress,
+       double customerLatitude,
+       double customerLongitude
 ) {
     public Customer toEntity(){
         return Customer.builder()
                 .customerNickname(customerNickname)
                 .customerAddress(customerAddress)
+                .customerLatitude(customerLatitude)
+                .customerLongitude(customerLongitude)
                 .build();
     }
 }

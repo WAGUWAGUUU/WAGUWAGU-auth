@@ -16,6 +16,8 @@ public interface CustomerRepository extends ReactiveCrudRepository<Customer,Long
     Flux<Customer> findByCustomerEmail(String customerEmail);
 
     @Query("UPDATE CUSTOMERS SET CUSTOMER_ADDRESS = :customerAddress, " +
-            "CUSTOMER_NICKNAME = :customerNickname WHERE CUSTOMER_ID = :customerId")
-    Mono<Customer> updateCustomerAddress(Long customerId, String customerNickname, String customerAddress);
+            "CUSTOMER_NICKNAME = :customerNickname, CUSTOMER_LATITUDE = :customerLatitude," +
+            "CUSTOMER_LONGITUDE = :customerLongitude WHERE CUSTOMER_ID = :customerId")
+    Mono<Customer> updateCustomerInfo(Long customerId, String customerNickname, String customerAddress,
+                                      double customerLatitude, double customerLongitude);
 }
