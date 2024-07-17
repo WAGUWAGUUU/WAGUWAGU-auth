@@ -27,4 +27,6 @@ public class Owner {
     private double ownerLatitude;
     @Column("OWNER_LONGITUDE")
     private double ownerLongitude;
+    @Column("OWNER_BUSINESS_NUMBER")
+    private String ownerBusinessNumber;
 }

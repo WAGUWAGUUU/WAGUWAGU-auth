@@ -45,6 +45,7 @@ public class JwtUtil {
                 .claim("address", owner.getOwnerAddress())
                 .claim("latitude", owner.getOwnerLatitude())
                 .claim("longitude", owner.getOwnerLongitude())
+                .claim("ownerBusinessNumber",owner.getOwnerBusinessNumber())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(secretKey)
                 .compact();
@@ -106,7 +107,8 @@ public class JwtUtil {
         String ownerAddress = payload.get("address", String.class);
         double latitude = payload.get("latitude", Double.class);
         double longitude = payload.get("longitude", Double.class);
-        return new Owner(ownerId, ownerName, ownerEmail, ownerAddress, latitude, longitude);
+        String ownerBusinessNumber = payload.get("ownerBusinessNumber", String.class);
+        return new Owner(ownerId, ownerName, ownerEmail, ownerAddress, latitude, longitude, ownerBusinessNumber);
     }
 
     public Rider getRiderFromToken(String token){

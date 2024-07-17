@@ -5,6 +5,7 @@ import com.example.wgwg_auth.domain.dto.response.UserSignInResponse;
 import com.example.wgwg_auth.service.CustomerService;
 import com.example.wgwg_auth.service.KakaoService;
 import com.example.wgwg_auth.service.OwnerService;
+import com.example.wgwg_auth.service.RiderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class KakaoLoginController {
     private final KakaoService kakaoService;
     private final CustomerService customerService;
     private final OwnerService ownerService;
+    private final RiderService riderService;
 
     @GetMapping("customers/callback")
     public Mono<ResponseEntity<?>> customerCallback(@RequestParam("code") String code) {
@@ -61,7 +63,7 @@ public class KakaoLoginController {
                                     userInfo.getId(),
                                     userInfo.getKakaoAccount().getProfile().getNickName(),
                                     userInfo.getKakaoAccount().getEmail());
-                            return ownerService.saveOwnerInfo(request)
+                            return riderService.saveRiderInfo(request)
                                     .map(UserSignInResponse::token)
                                     .map(token -> ResponseEntity.ok(token));
                         })

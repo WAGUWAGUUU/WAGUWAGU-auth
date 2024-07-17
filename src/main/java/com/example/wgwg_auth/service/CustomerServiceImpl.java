@@ -6,6 +6,8 @@ import com.example.wgwg_auth.domain.dto.response.UserSignInResponse;
 import com.example.wgwg_auth.domain.entity.Customer;
 import com.example.wgwg_auth.domain.repository.CustomerRepository;
 import com.example.wgwg_auth.global.utils.JwtUtil;
+import com.example.wgwg_auth.global.kafka.CustomerProducer;
+import com.example.wgwg_auth.global.kafka.dto.KafkaCustomerDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import reactor.core.publisher.Mono;
 public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final JwtUtil jwtUtil;
+    private final CustomerProducer customerProducer;
 
     @Override
     public Mono<UserSignInResponse> saveCustomerInfo(UserSignInRequest request) {
@@ -46,6 +49,9 @@ public class CustomerServiceImpl implements CustomerService {
                                     String token = jwtUtil.generateCustomerToken(customer);
                                     UserSignInResponse response = UserSignInResponse.from(token);
                                     log.info(response.token());
+                                    // Kafka 메시지 전송
+                                    KafkaCustomerDto dto = new KafkaCustomerDto(customer.getCustomerId(), customer.getCustomerLatitude(), customer.getCustomerLongitude());
+                                    customerProducer.sendCustomerInfo(dto, "customer_info_to_store");
                                     return Mono.just(response);
                                 });
                     }
@@ -64,10 +70,16 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Mono<Customer> updateCustomerInfo(Long customerId, CustomerRequest request) {
         return customerRepository.updateCustomerInfo(
-                customerId, request.toEntity().getCustomerNickname(),request.toEntity().getCustomerAddress(),
+                        customerId, request.toEntity().getCustomerNickname(), request.toEntity().getCustomerAddress(),
                         request.toEntity().getCustomerLatitude(), request.toEntity().getCustomerLongitude())
                 .then(customerRepository.findById(customerId))
-                .doOnSuccess(customer -> log.info("Customer address updated successfully for customerId: " + customerId))
+                .doOnSuccess(customer -> {
+                    log.info("Customer address updated successfully for customerId: " + customerId);
+                    // Kafka 메시지 전송
+                    KafkaCustomerDto dto = new KafkaCustomerDto(customer.getCustomerId(), request.toEntity().getCustomerLatitude(),
+                            request.toEntity().getCustomerLongitude());
+                    customerProducer.sendCustomerInfo(dto, "customer_info_to_store");
+                })
                 .doOnError(e -> log.error("Error updating customer address for customerId: " + customerId, e));
     }
 }

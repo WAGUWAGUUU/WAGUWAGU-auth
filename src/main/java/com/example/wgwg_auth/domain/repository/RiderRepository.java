@@ -12,7 +12,7 @@ public interface RiderRepository extends ReactiveCrudRepository<Rider,Long> {
             "ON DUPLICATE KEY UPDATE RIDER_EMAIL = RIDER_EMAIL ")
     Mono<Void> insertIfNotExistAndReturn(Long riderId, String riderNickname, String riderEmail);
 
-    @Query("SELECT RIDER_ID, RIDER_NICKNAME, RIDER_EMAIL, CUSTOMER_ADDRESS FROM RIDERS WHERE RIDER_EMAIL = :riderEmail")
+    @Query("SELECT * FROM RIDERS WHERE RIDER_EMAIL = :riderEmail")
     Flux<Rider> findByRiderEmail(String riderEmail);
 
     @Query("UPDATE RIDERS SET RIDER_ADDRESS = :riderAddress, " +

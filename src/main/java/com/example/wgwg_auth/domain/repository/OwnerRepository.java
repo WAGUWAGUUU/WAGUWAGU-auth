@@ -17,8 +17,10 @@ public interface OwnerRepository  extends ReactiveCrudRepository<Owner,Long> {
 
     @Query("UPDATE OWNERS SET OWNER_ADDRESS = :ownerAddress, " +
             "OWNER_NAME = :ownerName, OWNER_LATITUDE = :ownerLatitude," +
-            "OWNER_LONGITUDE = :ownerLongitude WHERE OWNER_ID = :ownerId")
+            "OWNER_LONGITUDE = :ownerLongitude, OWNER_BUSINESS_NUMBER = :ownerBusinessNumber" +
+            " WHERE OWNER_ID = :ownerId")
     Mono<Owner> updateOwnerInfo(Long ownerId, String ownerName, String ownerAddress,
-                                      double ownerLatitude, double ownerLongitude);
+                                      double ownerLatitude, double ownerLongitude,
+                                String ownerBusinessNumber);
 
 }

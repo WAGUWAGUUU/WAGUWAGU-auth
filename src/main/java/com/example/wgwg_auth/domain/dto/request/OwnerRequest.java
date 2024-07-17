@@ -7,7 +7,8 @@ public record OwnerRequest(
        String ownerName,
        String ownerAddress,
        double ownerLatitude,
-       double ownerLongitude
+       double ownerLongitude,
+       String ownerBusinessNumber
 ) {
     public Owner toEntity(){
         return Owner.builder()
@@ -15,6 +16,7 @@ public record OwnerRequest(
                 .ownerAddress(ownerAddress)
                 .ownerLatitude(ownerLatitude)
                 .ownerLongitude(ownerLongitude)
+                .ownerBusinessNumber(ownerBusinessNumber)
                 .build();
     }
 }

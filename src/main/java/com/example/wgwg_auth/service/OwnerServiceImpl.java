@@ -69,7 +69,8 @@ public class OwnerServiceImpl implements OwnerService {
                 ownerId, request.toEntity().getOwnerName(),
                         request.toEntity().getOwnerAddress(),
                         request.toEntity().getOwnerLatitude(),
-                        request.toEntity().getOwnerLongitude())
+                        request.toEntity().getOwnerLongitude(),
+                        request.toEntity().getOwnerBusinessNumber())
                 .then(ownerRepository.findById(ownerId))
                 .doOnSuccess(customer -> log.info("Owner address updated successfully for ownerId: " + ownerId))
                 .doOnError(e -> log.error("Error updating owner address for ownerId: " + ownerId, e));
