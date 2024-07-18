@@ -3,6 +3,7 @@ package com.example.wgwg_auth.domain.dto.request;
 import com.example.wgwg_auth.domain.entity.Customer;
 import com.example.wgwg_auth.domain.entity.Owner;
 import com.example.wgwg_auth.domain.entity.Rider;
+import com.example.wgwg_auth.global.RiderTransportation;
 
 public record UserSignInRequest(
         Long userId,
@@ -28,6 +29,8 @@ public record UserSignInRequest(
                 .riderId(userId)
                 .riderNickname(UserNickname)
                 .riderEmail(UserEmail)
+                .riderActivate(false)
+                .riderTransportation(RiderTransportation.WALK)
                 .build();
     }
 }

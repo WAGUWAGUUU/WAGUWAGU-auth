@@ -1,9 +1,11 @@
 package com.example.wgwg_auth.controller;
 
 import com.example.wgwg_auth.domain.dto.request.CustomerRequest;
+import com.example.wgwg_auth.domain.dto.request.RiderActivityRequest;
 import com.example.wgwg_auth.domain.dto.request.RiderRequest;
 import com.example.wgwg_auth.domain.entity.Customer;
 import com.example.wgwg_auth.domain.entity.Rider;
+import com.example.wgwg_auth.domain.entity.RiderActivityArea;
 import com.example.wgwg_auth.global.utils.JwtUtil;
 import com.example.wgwg_auth.service.CustomerService;
 import com.example.wgwg_auth.service.RiderService;
@@ -20,11 +22,10 @@ public class RiderController {
     private final RiderService riderService;
     private final JwtUtil jwtUtil;
 
-
     @GetMapping
     public Mono<Rider> getRiderInfo(@RequestHeader("Authorization") String token) {
         String bearerToken = token.substring(7);
-        Long riderId = jwtUtil.getRiderFromToken(bearerToken).getRiderId();
+        Long riderId = jwtUtil.getRiderFromToken(bearerToken).getRider().getRiderId();
         return riderService.getRiderInfo(riderId);
     }
 
@@ -33,7 +34,16 @@ public class RiderController {
             (@RequestHeader("Authorization") String token,
              @RequestBody RiderRequest riderRequest) {
         String bearerToken = token.substring(7);
-        Long riderId = jwtUtil.getRiderFromToken(bearerToken).getRiderId();
+        Long riderId = jwtUtil.getRiderFromToken(bearerToken).getRider().getRiderId();
         return riderService.updateRiderInfo(riderId, riderRequest);
+    }
+
+    @PostMapping
+    public Mono<RiderActivityArea> saveActivityArea(@RequestHeader("Authorization") String token,
+                                                    @RequestParam String activityArea) {
+        String bearerToken = token.substring(7);
+        Long riderId = jwtUtil.getRiderFromToken(bearerToken).getRider().getRiderId();
+        RiderActivityRequest req = new RiderActivityRequest(riderId, activityArea);
+        return riderService.insertRiderActivityArea(req);
     }
 }

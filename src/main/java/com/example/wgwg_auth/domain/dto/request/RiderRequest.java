@@ -1,13 +1,13 @@
 package com.example.wgwg_auth.domain.dto.request;
 
 import com.example.wgwg_auth.domain.entity.Rider;
+import com.example.wgwg_auth.global.RiderTransportation;
 
 public record RiderRequest(
        String riderNickname,
        String riderAddress,
-       String riderActivateArea,
        String riderPhone,
-       String riderTransportation,
+       RiderTransportation riderTransportation,
        double riderLatitude,
        double riderLongitude,
        boolean riderActivate
@@ -16,7 +16,6 @@ public record RiderRequest(
         return Rider.builder()
                 .riderNickname(riderNickname)
                 .riderActivate(riderActivate)
-                .riderActivityArea(riderActivateArea)
                 .riderPhone(riderPhone)
                 .riderTransportation(riderTransportation)
                 .riderAddress(riderAddress)

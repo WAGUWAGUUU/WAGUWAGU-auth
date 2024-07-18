@@ -1,8 +1,11 @@
 package com.example.wgwg_auth.global.utils;
 
+import com.example.wgwg_auth.domain.dto.response.RiderWithActivityAreas;
 import com.example.wgwg_auth.domain.entity.Customer;
 import com.example.wgwg_auth.domain.entity.Owner;
 import com.example.wgwg_auth.domain.entity.Rider;
+import com.example.wgwg_auth.domain.entity.RiderActivityArea;
+import com.example.wgwg_auth.global.RiderTransportation;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +13,8 @@ import org.springframework.stereotype.Component;
 import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
@@ -51,7 +56,8 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String generateRiderToken(Rider rider) {
+    public String generateRiderToken(Rider rider,
+                                     List<RiderActivityArea> activityAreas) {
         return Jwts.builder()
                 .claim("id", rider.getRiderId())
                 .claim("email", rider.getRiderEmail())
@@ -60,7 +66,9 @@ public class JwtUtil {
                 .claim("latitude", rider.getRiderLatitude())
                 .claim("longitude", rider.getRiderLongitude())
                 .claim("phone", rider.getRiderPhone())
-                .claim("activity_area", rider.getRiderActivityArea())
+                .claim("activityAreas", activityAreas.stream()
+                        .map(RiderActivityArea::getRiderActivityArea)
+                        .collect(Collectors.toList()))
                 .claim("activate", rider.getRiderActivate())
                 .claim("transportation", rider.getRiderTransportation())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
@@ -111,7 +119,7 @@ public class JwtUtil {
         return new Owner(ownerId, ownerName, ownerEmail, ownerAddress, latitude, longitude, ownerBusinessNumber);
     }
 
-    public Rider getRiderFromToken(String token){
+    public RiderWithActivityAreas getRiderFromToken(String token) {
         Claims payload = (Claims) Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
@@ -125,10 +133,19 @@ public class JwtUtil {
         double latitude = payload.get("latitude", Double.class);
         double longitude = payload.get("longitude", Double.class);
         String riderPhone = payload.get("phone", String.class);
-        String riderActivityArea = payload.get("activity_area", String.class);
         Boolean riderActivate = payload.get("activate", Boolean.class);
-        String riderTransportation = payload.get("transportation", String.class);
-        return new Rider(riderId, riderNickname, riderEmail, riderPhone, riderActivityArea,
-                riderActivate, riderTransportation,riderAddress, latitude, longitude);
+        String riderTransportationString = payload.get("transportation", String.class);
+
+        RiderTransportation riderTransportation = RiderTransportation.valueOf(riderTransportationString);
+
+        Rider rider = new Rider(riderId, riderNickname, riderEmail, riderPhone,
+                riderActivate, riderTransportation, riderAddress, latitude, longitude);
+
+        List<String> activityAreasStr = payload.get("activityAreas", List.class);
+        List<RiderActivityArea> activityAreas = activityAreasStr.stream()
+                .map(area -> new RiderActivityArea(null, riderId, area))
+                .collect(Collectors.toList());
+
+        return new RiderWithActivityAreas(rider, activityAreas);
     }
 }

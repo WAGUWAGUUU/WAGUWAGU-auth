@@ -1,5 +1,6 @@
 package com.example.wgwg_auth.domain.entity;
 
+import com.example.wgwg_auth.global.RiderTransportation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,12 +24,10 @@ public class Rider {
     private String riderEmail;
     @Column("RIDER_PHONE")
     private String riderPhone;
-    @Column("RIDER_ACTIVITY_AREA")
-    private String riderActivityArea;
     @Column("RIDER_ACTIVATE")
     private Boolean riderActivate;
     @Column("RIDER_TRANSPORTATION")
-    private String riderTransportation;
+    private RiderTransportation riderTransportation;
     @Column("RIDER_ADDRESS")
     private String riderAddress;
     @Column("RIDER_LATITUDE")
