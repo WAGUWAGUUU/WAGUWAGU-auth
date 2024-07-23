@@ -1,6 +1,7 @@
 package com.example.wgwg_auth.controller;
 
 import com.example.wgwg_auth.domain.dto.request.CustomerRequest;
+import com.example.wgwg_auth.domain.dto.response.CustomerResponse;
 import com.example.wgwg_auth.domain.entity.Customer;
 import com.example.wgwg_auth.global.utils.JwtAuthenticationFilter;
 import com.example.wgwg_auth.global.utils.JwtUtil;
@@ -28,7 +29,7 @@ public class CustomerController {
     }
 
     @PutMapping
-    public Mono<Customer> updateCustomer
+    public Mono<CustomerResponse> updateCustomer
             (@RequestHeader("Authorization") String token,
              @RequestBody CustomerRequest customerRequest) {
         String bearerToken = token.substring(7);

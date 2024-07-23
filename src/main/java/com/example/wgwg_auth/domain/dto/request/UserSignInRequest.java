@@ -30,7 +30,7 @@ public record UserSignInRequest(
                 .riderNickname(UserNickname)
                 .riderEmail(UserEmail)
                 .riderActivate(false)
-                .riderTransportation(RiderTransportation.WALK)
+                .riderTransportation(RiderTransportation.MOTORBIKE)
                 .build();
     }
 }

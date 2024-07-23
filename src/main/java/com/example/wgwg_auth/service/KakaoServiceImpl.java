@@ -28,6 +28,8 @@ public class KakaoServiceImpl implements KakaoService {
 
     @Override
     public Mono<String> getAccessTokenFromKakao(String code) {
+        String url = KAUTH_TOKEN_URL_HOST + "/oauth/token";
+
         return WebClient.create(KAUTH_TOKEN_URL_HOST).post()
                 .uri(uriBuilder -> uriBuilder
                         .scheme("https")
@@ -39,13 +41,18 @@ public class KakaoServiceImpl implements KakaoService {
                         .build(true))
                 .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.toString())
                 .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.error(new RuntimeException("Invalid Parameter")))
-                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new RuntimeException("Internal Server Error")))
+                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> {
+                    log.error("카카오에서 액세스 토큰을 요청할 때 4xx 오류 발생: {}", clientResponse.statusCode());
+                    return Mono.error(new RuntimeException("Invalid Parameter"));
+                })
+                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> {
+                    log.error("카카오에서 액세스 토큰을 요청할 때 5xx 오류 발생: {}", clientResponse.statusCode());
+                    return Mono.error(new RuntimeException("Internal Server Error"));
+                })
                 .bodyToMono(KakaoTokenResponseDto.class)
                 .doOnNext(kakaoTokenResponseDto -> {
                     log.info(" [Kakao Service] Access Token ------> {}", kakaoTokenResponseDto.getAccessToken());
                     log.info(" [Kakao Service] Refresh Token ------> {}", kakaoTokenResponseDto.getRefreshToken());
-                    //제공 조건: OpenID Connect가 활성화 된 앱의 토큰 발급 요청인 경우 또는 scope에 openid를 포함한 추가 항목 동의 받기 요청을 거친 토큰 발급 요청인 경우
                     log.info(" [Kakao Service] Id Token ------> {}", kakaoTokenResponseDto.getIdToken());
                     log.info(" [Kakao Service] Scope ------> {}", kakaoTokenResponseDto.getScope());
                 })
@@ -63,15 +70,15 @@ public class KakaoServiceImpl implements KakaoService {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken) // access token 인가
                 .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.toString())
                 .retrieve()
-
-                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.error(new RuntimeException("Invalid Parameter")))
-                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new RuntimeException("Internal Server Error")))
+                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> {
+                    log.error("카카오에서 사용자 정보를 요청할 때 4xx 오류 발생: {}", clientResponse.statusCode());
+                    return Mono.error(new RuntimeException("Invalid Parameter"));
+                })
+                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> {
+                    log.error("카카오에서 사용자 정보를 요청할 때 5xx 오류 발생: {}", clientResponse.statusCode());
+                    return Mono.error(new RuntimeException("Internal Server Error"));
+                })
                 .bodyToMono(KakaoUserInfoResponseDto.class)
-//                .doOnNext(userInfo->{
-//                    CustomerRequest req = new CustomerRequest(userInfo.getKakaoAccount().getProfile().getNickName(),
-//                            userInfo.getKakaoAccount().getEmail(),
-//                            userInfo.getKakaoAccount().getProfile().)
-//                })
                 .doOnNext(userInfo -> {
                     log.info("[ Kakao Service ] Auth ID ---> {} ", userInfo.getId());
                     log.info("[ Kakao Service ] NickName ---> {} ", userInfo.getKakaoAccount().getProfile().getNickName());

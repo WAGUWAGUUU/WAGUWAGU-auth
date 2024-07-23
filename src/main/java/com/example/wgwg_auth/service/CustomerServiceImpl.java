@@ -2,6 +2,7 @@ package com.example.wgwg_auth.service;
 
 import com.example.wgwg_auth.domain.dto.request.CustomerRequest;
 import com.example.wgwg_auth.domain.dto.request.UserSignInRequest;
+import com.example.wgwg_auth.domain.dto.response.CustomerResponse;
 import com.example.wgwg_auth.domain.dto.response.UserSignInResponse;
 import com.example.wgwg_auth.domain.entity.Customer;
 import com.example.wgwg_auth.domain.repository.CustomerRepository;
@@ -68,17 +69,20 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Mono<Customer> updateCustomerInfo(Long customerId, CustomerRequest request) {
+    public Mono<CustomerResponse> updateCustomerInfo(Long customerId, CustomerRequest request) {
         return customerRepository.updateCustomerInfo(
                         customerId, request.toEntity().getCustomerNickname(), request.toEntity().getCustomerAddress(),
                         request.toEntity().getCustomerLatitude(), request.toEntity().getCustomerLongitude())
                 .then(customerRepository.findById(customerId))
-                .doOnSuccess(customer -> {
+                .flatMap(customer -> {
+                    String token = jwtUtil.generateCustomerToken(customer);
+                    CustomerResponse response = CustomerResponse.from(customer, token);
                     log.info("Customer address updated successfully for customerId: " + customerId);
                     // Kafka 메시지 전송
                     KafkaCustomerDto dto = new KafkaCustomerDto(customer.getCustomerId(), request.toEntity().getCustomerLatitude(),
                             request.toEntity().getCustomerLongitude());
                     customerProducer.sendCustomerInfo(dto, "customer_info_to_store");
+                    return Mono.just(response);
                 })
                 .doOnError(e -> log.error("Error updating customer address for customerId: " + customerId, e));
     }
