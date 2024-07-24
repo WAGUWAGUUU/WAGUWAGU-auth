@@ -3,7 +3,7 @@ package com.example.wgwg_auth.service;
 import com.example.wgwg_auth.domain.dto.request.RiderActivityRequest;
 import com.example.wgwg_auth.domain.dto.request.RiderRequest;
 import com.example.wgwg_auth.domain.dto.request.UserSignInRequest;
-import com.example.wgwg_auth.domain.dto.response.RiderResponse;
+import com.example.wgwg_auth.domain.dto.response.RiderWithActivityAreas;
 import com.example.wgwg_auth.domain.dto.response.UserSignInResponse;
 import com.example.wgwg_auth.domain.entity.Rider;
 import com.example.wgwg_auth.domain.entity.RiderActivityArea;
@@ -15,8 +15,10 @@ import com.example.wgwg_auth.global.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -67,8 +69,8 @@ public class RiderServiceImpl implements RiderService {
                 });
     }
 
-    private Mono<String> generateTokenWithActivityAreas(RiderResponse rider) {
-        return riderActivityRepository.findAllByRiderId(rider())
+    private Mono<String> generateTokenWithActivityAreas(Rider rider) {
+        return riderActivityRepository.findAllByRiderId(rider.getRiderId())
                 .collectList()
                 .map(activityAreas -> jwtUtil.generateRiderToken(rider, activityAreas));
     }
@@ -93,27 +95,9 @@ public class RiderServiceImpl implements RiderService {
                 });
     }
 
-/*    @Override
+    @Override
     public Mono<Rider> getRiderInfo(Long riderId) {
         return riderRepository.findById(riderId);
-    }*/
-
-    @Override
-    public Mono<RiderResponse> getRiderInfo(Long riderId) {
-        return riderRepository.findById(riderId)
-                .flatMap(rider -> riderActivityRepository.findAllByRiderId(riderId)
-                        .collectList() // Convert Flux<RiderActivityArea> to List<RiderActivityArea>
-                        .map(riderActivityAreas -> new RiderResponse(
-                                rider.getRiderId(),
-                                rider.getRiderEmail(),
-                                rider.getRiderNickname(),
-                                rider.getRiderPhone(),
-                                riderActivityAreas,
-                                rider.getRiderTransportation(),
-                                rider.getRiderAccount(),
-                                rider.getRiderIsDeleted()
-                        ))
-                );
     }
 
     @Override
@@ -134,5 +118,13 @@ public class RiderServiceImpl implements RiderService {
     @Override
     public Mono<RiderActivityArea> insertRiderActivityArea(RiderActivityRequest req) {
         return riderActivityRepository.save(req.toEntity());
+    }
+    @Override
+    public Mono<RiderWithActivityAreas> getRiderWithActivityAreas(Long riderId) {
+        Mono<Rider> riderMono = riderRepository.findById(riderId);
+        Mono<List<RiderActivityArea>> activityAreasMono = riderActivityRepository.findAllByRiderId(riderId)
+                .collectList();
+
+        return Mono.zip(riderMono, activityAreasMono, RiderWithActivityAreas::new);
     }
 }

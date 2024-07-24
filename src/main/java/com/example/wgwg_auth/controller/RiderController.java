@@ -4,6 +4,7 @@ import com.example.wgwg_auth.domain.dto.request.CustomerRequest;
 import com.example.wgwg_auth.domain.dto.request.RiderActivityRequest;
 import com.example.wgwg_auth.domain.dto.request.RiderRequest;
 import com.example.wgwg_auth.domain.dto.response.RiderResponse;
+import com.example.wgwg_auth.domain.dto.response.RiderWithActivityAreas;
 import com.example.wgwg_auth.domain.entity.Customer;
 import com.example.wgwg_auth.domain.entity.Rider;
 import com.example.wgwg_auth.domain.entity.RiderActivityArea;
@@ -24,10 +25,11 @@ public class RiderController {
     private final JwtUtil jwtUtil;
 
     @GetMapping
-    public Mono<RiderResponse> getRiderInfo(@RequestHeader("Authorization") String token) {
+    public Mono<RiderWithActivityAreas> getRiderInfo(@RequestHeader("Authorization") String token) {
         String bearerToken = token.substring(7);
         Long riderId = jwtUtil.getRiderFromToken(bearerToken).getRider().getRiderId();
-        return riderService.getRiderInfo(riderId);
+//        return riderService.getRiderInfo(riderId);
+        return riderService.getRiderWithActivityAreas(riderId);
     }
 
     @PutMapping
