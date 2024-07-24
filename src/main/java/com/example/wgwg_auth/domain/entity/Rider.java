@@ -28,10 +28,8 @@ public class Rider {
     private Boolean riderActivate;
     @Column("RIDER_TRANSPORTATION")
     private RiderTransportation riderTransportation;
-    @Column("RIDER_ADDRESS")
-    private String riderAddress;
-    @Column("RIDER_LATITUDE")
-    private double riderLatitude;
-    @Column("RIDER_LONGITUDE")
-    private double riderLongitude;
+    @Column("RIDER_ACCOUNT")
+    private String riderAccount;
+    @Column("RIDER_IS_DELETED")
+    private Boolean riderIsDeleted;
 }

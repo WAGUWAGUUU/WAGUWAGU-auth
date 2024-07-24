@@ -62,15 +62,14 @@ public class JwtUtil {
                 .claim("id", rider.getRiderId())
                 .claim("email", rider.getRiderEmail())
                 .claim("nickname", rider.getRiderNickname())
-                .claim("address", rider.getRiderAddress())
-                .claim("latitude", rider.getRiderLatitude())
-                .claim("longitude", rider.getRiderLongitude())
                 .claim("phone", rider.getRiderPhone())
                 .claim("activityAreas", activityAreas.stream()
                         .map(RiderActivityArea::getRiderActivityArea)
                         .collect(Collectors.toList()))
                 .claim("activate", rider.getRiderActivate())
                 .claim("transportation", rider.getRiderTransportation())
+                .claim("account", rider.getRiderAccount())
+                .claim("isDeleted", rider.getRiderIsDeleted())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(secretKey)
                 .compact();
@@ -129,17 +128,16 @@ public class JwtUtil {
         Long riderId = payload.get("id", Long.class);
         String riderEmail = payload.get("email", String.class);
         String riderNickname = payload.get("nickname", String.class);
-        String riderAddress = payload.get("address", String.class);
-        double latitude = payload.get("latitude", Double.class);
-        double longitude = payload.get("longitude", Double.class);
         String riderPhone = payload.get("phone", String.class);
         Boolean riderActivate = payload.get("activate", Boolean.class);
         String riderTransportationString = payload.get("transportation", String.class);
+        String riderAccount = payload.get("account", String.class);
+        Boolean riderIsDeleted = (payload.get("isDeleted", Boolean.class));
 
         RiderTransportation riderTransportation = RiderTransportation.valueOf(riderTransportationString);
 
         Rider rider = new Rider(riderId, riderNickname, riderEmail, riderPhone,
-                riderActivate, riderTransportation, riderAddress, latitude, longitude);
+                riderActivate, riderTransportation, riderAccount, riderIsDeleted);
 
         List<String> activityAreasStr = payload.get("activityAreas", List.class);
         List<RiderActivityArea> activityAreas = activityAreasStr.stream()

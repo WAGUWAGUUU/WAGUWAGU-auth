@@ -1,15 +1,12 @@
 package com.example.wgwg_auth.controller;
 
 import com.example.wgwg_auth.domain.dto.request.CustomerRequest;
-import com.example.wgwg_auth.domain.dto.response.CustomerResponse;
 import com.example.wgwg_auth.domain.entity.Customer;
-import com.example.wgwg_auth.global.utils.JwtAuthenticationFilter;
 import com.example.wgwg_auth.global.utils.JwtUtil;
 import com.example.wgwg_auth.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -29,7 +26,7 @@ public class CustomerController {
     }
 
     @PutMapping
-    public Mono<CustomerResponse> updateCustomer
+    public Mono<Customer> updateCustomer
             (@RequestHeader("Authorization") String token,
              @RequestBody CustomerRequest customerRequest) {
         String bearerToken = token.substring(7);

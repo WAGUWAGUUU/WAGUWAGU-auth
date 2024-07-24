@@ -5,11 +5,10 @@ import com.example.wgwg_auth.global.RiderTransportation;
 
 public record RiderRequest(
        String riderNickname,
-       String riderAddress,
        String riderPhone,
        RiderTransportation riderTransportation,
-       double riderLatitude,
-       double riderLongitude,
+       String riderAccount,
+       boolean riderIsDeleted,
        boolean riderActivate
 ) {
     public Rider toEntity(){
@@ -18,9 +17,8 @@ public record RiderRequest(
                 .riderActivate(riderActivate)
                 .riderPhone(riderPhone)
                 .riderTransportation(riderTransportation)
-                .riderAddress(riderAddress)
-                .riderLatitude(riderLatitude)
-                .riderLongitude(riderLongitude)
+                .riderAccount(riderAccount)
+                .riderIsDeleted(riderIsDeleted)
                 .build();
     }
 }

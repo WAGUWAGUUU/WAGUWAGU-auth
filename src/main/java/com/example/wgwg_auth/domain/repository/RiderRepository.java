@@ -16,13 +16,11 @@ public interface RiderRepository extends ReactiveCrudRepository<Rider,Long> {
     @Query("SELECT * FROM RIDERS WHERE RIDER_EMAIL = :riderEmail")
     Flux<Rider> findByRiderEmail(String riderEmail);
 
-    @Query("UPDATE RIDERS SET RIDER_ADDRESS = :riderAddress, " +
-            "RIDER_NICKNAME = :riderNickname, RIDER_LATITUDE = :riderLatitude," +
-            "RIDER_LONGITUDE = :riderLongitude, RIDER_PHONE = :riderPhone," +
-            "RIDER_ACTIVATE = :riderActivate, " +
+    @Query("UPDATE RIDERS SET RIDER_ACCOUNT = :riderAccount, " +
+            "RIDER_NICKNAME = :riderNickname,  RIDER_PHONE = :riderPhone," +
+            "RIDER_ACTIVATE = :riderActivate, RIDER_IS_DELETED = :riderIsDeleted, " +
             "RIDER_TRANSPORTATION = :riderTransportation WHERE RIDER_ID = :riderId")
-    Mono<Rider> updateRiderInfo(Long riderId, String riderNickname, String riderAddress,
-                                double riderLatitude, double riderLongitude,
+    Mono<Rider> updateRiderInfo(Long riderId, String riderNickname, String riderAccount,
                                 String riderPhone, boolean riderActivate,
-                                String riderTransportation);
+                                String riderTransportation, boolean riderIsDeleted);
 }
