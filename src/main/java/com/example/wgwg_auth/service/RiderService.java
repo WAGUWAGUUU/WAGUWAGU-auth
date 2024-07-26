@@ -7,6 +7,7 @@ import com.example.wgwg_auth.domain.dto.response.RiderWithActivityAreas;
 import com.example.wgwg_auth.domain.dto.response.UserSignInResponse;
 import com.example.wgwg_auth.domain.entity.Rider;
 import com.example.wgwg_auth.domain.entity.RiderActivityArea;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface RiderService {
@@ -15,4 +16,5 @@ public interface RiderService {
     Mono<Rider> updateRiderInfo(Long riderId, RiderRequest req);
     Mono<RiderActivityArea> insertRiderActivityArea(RiderActivityRequest req);
     Mono<RiderWithActivityAreas> getRiderWithActivityAreas(Long riderId);
+    Flux<RiderActivityArea> deleteRiderActivityArea(Long riderId);
 }

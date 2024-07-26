@@ -14,6 +14,7 @@ import com.example.wgwg_auth.service.RiderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -48,5 +49,12 @@ public class RiderController {
         Long riderId = jwtUtil.getRiderFromToken(bearerToken).getRider().getRiderId();
         RiderActivityRequest req = new RiderActivityRequest(riderId, activityArea);
         return riderService.insertRiderActivityArea(req);
+    }
+
+    @DeleteMapping
+    public Flux<RiderActivityArea> deleteActivityArea(@RequestHeader("Authorization") String token) {
+        String bearerToken = token.substring(7);
+        Long riderId = jwtUtil.getRiderFromToken(bearerToken).getRider().getRiderId();
+        return riderService.deleteRiderActivityArea(riderId);
     }
 }

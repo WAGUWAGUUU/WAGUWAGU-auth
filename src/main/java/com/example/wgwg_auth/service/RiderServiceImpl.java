@@ -119,6 +119,11 @@ public class RiderServiceImpl implements RiderService {
     public Mono<RiderActivityArea> insertRiderActivityArea(RiderActivityRequest req) {
         return riderActivityRepository.save(req.toEntity());
     }
+
+    @Override
+    public Flux<RiderActivityArea> deleteRiderActivityArea(Long riderId) {
+        return riderActivityRepository.deleteAllByRiderId(riderId);
+    }
     @Override
     public Mono<RiderWithActivityAreas> getRiderWithActivityAreas(Long riderId) {
         Mono<Rider> riderMono = riderRepository.findById(riderId);

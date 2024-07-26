@@ -10,4 +10,7 @@ import reactor.core.publisher.Mono;
 public interface RiderActivityRepository extends ReactiveCrudRepository<RiderActivityArea,Long> {
     @Query("SELECT * FROM RIDER_ACTIVITY_AREAS WHERE RIDER_ID = :riderId")
     Flux<RiderActivityArea> findAllByRiderId(Long riderId);
+
+    @Query("delete from RIDER_ACTIVITY_AREAS WHERE RIDER_ID = :riderId")
+    Flux<RiderActivityArea> deleteAllByRiderId(Long riderId);
 }

@@ -1,0 +1,52 @@
+spring:
+  r2dbc:
+    url: r2dbc:mysql://wgwg-auth-mysql:3306/wgwg_auth
+    username: ${username}
+    password: ${password}
+  h2:
+    console:
+      enabled: true
+  application:
+    name: auth
+  data:
+    r2dbc:
+      repositories:
+        enabled: true
+  kafka:
+    bootstrap-servers: 192.168.0.20:9092
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      group-id: auth-group
+      auto-offset-reset: earliest
+  main:
+    allow-bean-definition-overriding: true
+
+kakao:
+  client_id: f8609808f0ad80f284bc679eb3d80315
+#  redirect_uri: http://localhost:8080/callback
+  redirect_uri: http://localhost:8080/callback
+  customer_redirect_uri: http://192.168.0.15:8080/customers/callback
+#  customer_redirect_uri: http://192.168.0.15:8081/Home
+  owner_redirect_uri: http://192.168.0.15:8080/owners/callback
+  rider_redirect_uri: http://192.168.0.15:8080/riders/callback
+  client_secret: pYKRHvsNY8ppglKXqQeazr6jgXAWxHLn
+  KAUTH_TOKEN_URL_HOST: https://kauth.kakao.com
+  KAUTH_USER_URL_HOST: https://kapi.kakao.com
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+cors:
+  allowed-origins: "http://localhost:5173"
+  allowed-methods: "GET,POST,PUT,DELETE,OPTIONS"
+  allowed-headers: "*"
+  allow-credentials: true
+
+jwt:
+  secret: gbjksdsejkeruu2357597599#@@#@#@dhfsdhn
+  expiration: 25920000
