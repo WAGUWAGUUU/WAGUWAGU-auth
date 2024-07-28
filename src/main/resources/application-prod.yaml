@@ -13,7 +13,7 @@ spring:
       repositories:
         enabled: true
   kafka:
-    bootstrap-servers: 192.168.0.20:9092
+    bootstrap-servers: 34.71.194.186:9092
     producer:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
