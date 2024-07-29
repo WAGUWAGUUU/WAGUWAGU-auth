@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("customers")
+@RequestMapping("api/v1/customers")
 public class CustomerController {
     private final CustomerService customerService;
     private final JwtUtil jwtUtil;

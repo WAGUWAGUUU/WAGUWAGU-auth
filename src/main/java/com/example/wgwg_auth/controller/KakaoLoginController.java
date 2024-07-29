@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("")
+@RequestMapping("api/v1/")
 public class KakaoLoginController {
     private final KakaoService kakaoService;
     private final CustomerService customerService;

@@ -28,11 +28,11 @@ spring:
 kakao:
   client_id: f8609808f0ad80f284bc679eb3d80315
 #  redirect_uri: http://localhost:8080/callback
-  redirect_uri: http://localhost:8080/callback
-  customer_redirect_uri: http://192.168.0.15:8080/customers/callback
+  redirect_uri: http://localhost:8080/api/v1/callback
+  customer_redirect_uri: http://192.168.0.15:8080/api/v1/customers/callback
 #  customer_redirect_uri: http://192.168.0.15:8081/Home
-  owner_redirect_uri: http://192.168.0.15:8080/owners/callback
-  rider_redirect_uri: http://192.168.0.15:8080/riders/callback
+  owner_redirect_uri: http://192.168.0.15:8080/api/v1/owners/callback
+  rider_redirect_uri: http://192.168.0.15:8080/api/v1/riders/callback
   client_secret: pYKRHvsNY8ppglKXqQeazr6jgXAWxHLn
   KAUTH_TOKEN_URL_HOST: https://kauth.kakao.com
   KAUTH_USER_URL_HOST: https://kapi.kakao.com

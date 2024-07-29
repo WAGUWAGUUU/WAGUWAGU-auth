@@ -62,7 +62,7 @@ public class RiderServiceImpl implements RiderService {
                                 });
                     }
                 })
-                .doOnSuccess(response -> sendRiderToKafka(request.toRiderEntity()))
+                .doOnSuccess(response -> sendRiderToKafka(request.toRiderEntity(), "insert"))
                 .onErrorResume(e -> {
                     log.error("Error occurred while saving owner info: " + e.getMessage());
                     return Mono.error(e);
@@ -75,7 +75,7 @@ public class RiderServiceImpl implements RiderService {
                 .map(activityAreas -> jwtUtil.generateRiderToken(rider, activityAreas));
     }
 
-    private void sendRiderToKafka(Rider rider) {
+    private void sendRiderToKafka(Rider rider, String status) {
         riderActivityRepository.findAllByRiderId(rider.getRiderId())
                 .collectList()
                 .subscribe(activityAreas -> {
@@ -91,9 +91,10 @@ public class RiderServiceImpl implements RiderService {
                             rider.getRiderAccount(),
                             false
                     );
-                    riderProducer.sendRiderInfo(dto, "insert");
+                    riderProducer.sendRiderInfo(dto, status);
                 });
     }
+
 
     @Override
     public Mono<Rider> getRiderInfo(Long riderId) {
@@ -110,7 +111,7 @@ public class RiderServiceImpl implements RiderService {
                         request.toEntity().getRiderTransportation().toString(), request.riderIsDeleted()
                 )
                 .then(riderRepository.findById(riderId))
-                .doOnSuccess(response -> sendRiderToKafka(request.toEntity()))
+                .doOnSuccess(response -> sendRiderToKafka(request.toEntity(), "update"))
                 .doOnSuccess(customer -> log.info("Rider address updated successfully for ownerId: " + riderId))
                 .doOnError(e -> log.error("Error updating owner address for riderId: " + riderId, e));
     }

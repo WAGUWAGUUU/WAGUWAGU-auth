@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("owners")
+@RequestMapping("api/v1/owners")
 public class OwnerController {
     private final OwnerService ownerService;
     private final JwtUtil jwtUtil;
