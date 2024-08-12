@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    active: prod
   r2dbc:
     url: r2dbc:mysql://wgwg-auth-mysql:3306/wgwg_auth
     username: ${username}
@@ -20,7 +18,7 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
       value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
-      group-id: auth-group
+      group-id: auth
       auto-offset-reset: earliest
   main:
     allow-bean-definition-overriding: true
@@ -28,11 +26,11 @@ spring:
 kakao:
   client_id: f8609808f0ad80f284bc679eb3d80315
 #  redirect_uri: http://localhost:8080/callback
-  redirect_uri: http://localhost:8080/api/v1/callback
-  customer_redirect_uri: http://192.168.0.15:8080/api/v1/customers/callback
+#  redirect_uri: http://localhost:8080/api/v1/callback
+  customer_redirect_uri: http://34.41.123.200/api/v1/customers/callback
 #  customer_redirect_uri: http://192.168.0.15:8081/Home
-  owner_redirect_uri: http://192.168.0.15:8080/api/v1/owners/callback
-  rider_redirect_uri: http://192.168.0.15:8080/api/v1/riders/callback
+  owner_redirect_uri: http://34.41.123.200/api/v1/owners/callback
+  rider_redirect_uri: http://34.41.123.200/api/v1/riders/callback
   client_secret: pYKRHvsNY8ppglKXqQeazr6jgXAWxHLn
   KAUTH_TOKEN_URL_HOST: https://kauth.kakao.com
   KAUTH_USER_URL_HOST: https://kapi.kakao.com
@@ -52,3 +50,7 @@ cors:
 jwt:
   secret: gbjksdsejkeruu2357597599#@@#@#@dhfsdhn
   expiration: 25920000
+logging:
+  level:
+    org.springframework.kafka: DEBUG
+    org.apache.kafka: DEBUG

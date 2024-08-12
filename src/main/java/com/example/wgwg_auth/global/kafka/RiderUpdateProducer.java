@@ -1,6 +1,5 @@
 package com.example.wgwg_auth.global.kafka;
 
-import com.example.wgwg_auth.global.kafka.dto.KafkaOwnerDto;
 import com.example.wgwg_auth.global.kafka.dto.KafkaRiderDto;
 import com.example.wgwg_auth.global.kafka.dto.KafkaStatus;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +10,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class RiderProducer {
+public class RiderUpdateProducer {
     private final KafkaTemplate<String, KafkaStatus<KafkaRiderDto>> kafkaTemplate; // 타입 수정
-    private final String topic = "rider-save-topic";
+    private final String topic = "rider-update-topic";
 
     @Bean
     public NewTopic newTopic() {

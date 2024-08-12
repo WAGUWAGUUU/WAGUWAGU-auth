@@ -50,7 +50,7 @@ public class OwnerServiceImpl implements OwnerService {
                                     UserSignInResponse response = UserSignInResponse.from(token);
                                     log.info(response.token());
                                     // Kafka 메시지 전송
-                                    KafkaOwnerDto dto = new KafkaOwnerDto(owner.getOwnerId(),
+                                    KafkaOwnerDto dto = new KafkaOwnerDto(owner.getOwnerId(), owner.getOwnerEmail(),
                                             owner.getOwnerName(),owner.getOwnerBusinessNumber());
                                     ownerProducer.sendOwnerInfo(dto, "owner_info_to_store");
 
@@ -82,6 +82,7 @@ public class OwnerServiceImpl implements OwnerService {
                     log.info("Owner address updated successfully for ownerId: " + ownerId);
                     // Kafka 메시지 전송
                     KafkaOwnerDto dto = new KafkaOwnerDto(owner.getOwnerId(),
+                            owner.getOwnerEmail(),
                             request.toEntity().getOwnerName(),
                             request.toEntity().getOwnerBusinessNumber());
                     ownerProducer.sendOwnerInfo(dto, "owner_info_to_store");

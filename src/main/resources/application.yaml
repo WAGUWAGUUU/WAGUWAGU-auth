@@ -18,7 +18,7 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
       value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
-      group-id: auth-group
+      group-id: auth
       auto-offset-reset: earliest
   main:
     allow-bean-definition-overriding: true
@@ -50,3 +50,7 @@ cors:
 jwt:
   secret: gbjksdsejkeruu2357597599#@@#@#@dhfsdhn
   expiration: 25920000
+logging:
+  level:
+    org.springframework.kafka: DEBUG
+    org.apache.kafka: DEBUG

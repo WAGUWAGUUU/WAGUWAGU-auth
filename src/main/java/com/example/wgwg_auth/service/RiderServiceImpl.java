@@ -10,6 +10,7 @@ import com.example.wgwg_auth.domain.entity.RiderActivityArea;
 import com.example.wgwg_auth.domain.repository.RiderActivityRepository;
 import com.example.wgwg_auth.domain.repository.RiderRepository;
 import com.example.wgwg_auth.global.kafka.RiderProducer;
+import com.example.wgwg_auth.global.kafka.RiderUpdateProducer;
 import com.example.wgwg_auth.global.kafka.dto.KafkaRiderDto;
 import com.example.wgwg_auth.global.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class RiderServiceImpl implements RiderService {
     private final RiderActivityRepository riderActivityRepository;
     private final JwtUtil jwtUtil;
     private final RiderProducer riderProducer;
+    private final RiderUpdateProducer riderupdateProducer;
 
     @Override
     public Mono<UserSignInResponse> saveRiderInfo(UserSignInRequest request) {
@@ -95,25 +97,48 @@ public class RiderServiceImpl implements RiderService {
                 });
     }
 
+    private void sendRiderUpdateToKafka(Rider rider, String status) {
+        riderActivityRepository.findAllByRiderId(rider.getRiderId())
+                .collectList()
+                .subscribe(activityAreas -> {
+                    KafkaRiderDto dto = new KafkaRiderDto(
+                            rider.getRiderId(),
+                            rider.getRiderEmail(),
+                            rider.getRiderNickname(),
+                            rider.getRiderPhone(),
+                            activityAreas.stream()
+                                    .map(RiderActivityArea::getRiderActivityArea)
+                                    .collect(Collectors.toList()),
+                            rider.getRiderTransportation(),
+                            rider.getRiderAccount(),
+                            false
+                    );
+                    System.out.println(dto);
+                    riderupdateProducer.sendRiderInfo(dto, status);
+                });
+    }
 
     @Override
     public Mono<Rider> getRiderInfo(Long riderId) {
         return riderRepository.findById(riderId);
     }
-
     @Override
     public Mono<Rider> updateRiderInfo(Long riderId, RiderRequest request) {
         return riderRepository.updateRiderInfo(
-                        riderId, request.toEntity().getRiderNickname(),
+                        riderId,
+                        request.toEntity().getRiderNickname(),
                         request.riderAccount(),
                         request.toEntity().getRiderPhone(),
                         request.toEntity().getRiderActivate(),
-                        request.toEntity().getRiderTransportation().toString(), request.riderIsDeleted()
+                        request.toEntity().getRiderTransportation().toString(),
+                        request.riderIsDeleted()
                 )
                 .then(riderRepository.findById(riderId))
-                .doOnSuccess(response -> sendRiderToKafka(request.toEntity(), "update"))
-                .doOnSuccess(customer -> log.info("Rider address updated successfully for ownerId: " + riderId))
-                .doOnError(e -> log.error("Error updating owner address for riderId: " + riderId, e));
+                .doOnSuccess(rider -> {
+                    sendRiderUpdateToKafka(rider, "update"); // sendRiderUpdateToKafka에 Rider 객체를 넘김
+                    log.info("Rider address updated successfully for riderId: " + riderId);
+                })
+                .doOnError(e -> log.error("Error updating rider address for riderId: " + riderId, e));
     }
 
     @Override
