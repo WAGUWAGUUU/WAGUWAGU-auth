@@ -37,6 +37,7 @@ public class JwtUtil {
                 .claim("address", customer.getCustomerAddress())
                 .claim("latitude", customer.getCustomerLatitude())
                 .claim("longitude", customer.getCustomerLongitude())
+                .claim("phone", customer.getCustomerPhone())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(secretKey)
                 .compact();
@@ -47,9 +48,6 @@ public class JwtUtil {
                 .claim("id", owner.getOwnerId())
                 .claim("email", owner.getOwnerEmail())
                 .claim("name", owner.getOwnerName())
-                .claim("address", owner.getOwnerAddress())
-                .claim("latitude", owner.getOwnerLatitude())
-                .claim("longitude", owner.getOwnerLongitude())
                 .claim("ownerBusinessNumber",owner.getOwnerBusinessNumber())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(secretKey)
@@ -98,7 +96,9 @@ public class JwtUtil {
         String customerAddress = payload.get("address", String.class);
         double latitude = payload.get("latitude", Double.class);
         double longitude = payload.get("longitude", Double.class);
-        return new Customer(customerId, customerNickname, customerEmail, customerAddress, latitude, longitude);
+        String phone = payload.get("phone", String.class);
+        return new Customer(customerId, customerNickname, customerEmail,
+                customerAddress, latitude, longitude, phone);
     }
 
     public Owner getOwnerFromToken(String token){
@@ -111,11 +111,8 @@ public class JwtUtil {
         Long ownerId = payload.get("id", Long.class);
         String ownerEmail = payload.get("email", String.class);
         String ownerName = payload.get("name", String.class);
-        String ownerAddress = payload.get("address", String.class);
-        double latitude = payload.get("latitude", Double.class);
-        double longitude = payload.get("longitude", Double.class);
         String ownerBusinessNumber = payload.get("ownerBusinessNumber", String.class);
-        return new Owner(ownerId, ownerName, ownerEmail, ownerAddress, latitude, longitude, ownerBusinessNumber);
+        return new Owner(ownerId, ownerName, ownerEmail, ownerBusinessNumber);
     }
 
     public RiderWithActivityAreas getRiderFromToken(String token) {

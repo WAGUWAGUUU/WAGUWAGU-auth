@@ -29,6 +29,8 @@ public class Customer  {
     private double customerLatitude;
     @Column("CUSTOMER_LONGITUDE")
     private double customerLongitude;
+    @Column("CUSTOMER_PHONE")
+    private String customerPhone;
 
 //    public Collection<? extends GrantedAuthority> getAuthorities() {
 //        return List.of(()->"ROLE_USER");

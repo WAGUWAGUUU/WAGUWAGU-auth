@@ -72,19 +72,16 @@ public class OwnerServiceImpl implements OwnerService {
     @Override
     public Mono<Owner> updateOwnerInfo(Long ownerId, OwnerRequest request) {
         return ownerRepository.updateOwnerInfo(
-                ownerId, request.toEntity().getOwnerName(),
-                        request.toEntity().getOwnerAddress(),
-                        request.toEntity().getOwnerLatitude(),
-                        request.toEntity().getOwnerLongitude(),
-                        request.toEntity().getOwnerBusinessNumber())
+                ownerId, request.ownerName(),
+                        request.ownerBusinessNumber())
                 .then(ownerRepository.findById(ownerId))
                 .doOnSuccess(owner -> {
                     log.info("Owner address updated successfully for ownerId: " + ownerId);
                     // Kafka 메시지 전송
                     KafkaOwnerDto dto = new KafkaOwnerDto(owner.getOwnerId(),
                             owner.getOwnerEmail(),
-                            request.toEntity().getOwnerName(),
-                            request.toEntity().getOwnerBusinessNumber());
+                            request.ownerName(),
+                            request.ownerBusinessNumber());
                     ownerProducer.sendOwnerInfo(dto, "owner_info_to_store");
                 })
                 .doOnError(e -> log.error("Error updating owner address for ownerId: " + ownerId, e));

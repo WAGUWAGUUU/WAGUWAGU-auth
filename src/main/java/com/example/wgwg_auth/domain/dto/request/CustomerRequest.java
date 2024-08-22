@@ -6,14 +6,15 @@ public record CustomerRequest(
        String customerNickname,
        String customerAddress,
        double customerLatitude,
-       double customerLongitude
+       double customerLongitude,
+       String customerPhone
 ) {
-    public Customer toEntity(){
-        return Customer.builder()
-                .customerNickname(customerNickname)
-                .customerAddress(customerAddress)
-                .customerLatitude(customerLatitude)
-                .customerLongitude(customerLongitude)
-                .build();
-    }
+//    public Customer toEntity(){
+//        return Customer.builder()
+//                .customerNickname(customerNickname)
+//                .customerAddress(customerAddress)
+//                .customerLatitude(customerLatitude)
+//                .customerLongitude(customerLongitude)
+//                .build();
+//    }
 }

@@ -70,14 +70,15 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Mono<Customer> updateCustomerInfo(Long customerId, CustomerRequest request) {
         return customerRepository.updateCustomerInfo(
-                        customerId, request.toEntity().getCustomerNickname(), request.toEntity().getCustomerAddress(),
-                        request.toEntity().getCustomerLatitude(), request.toEntity().getCustomerLongitude())
+                        customerId, request.customerNickname(), request.customerAddress(),
+                        request.customerLatitude(), request.customerLongitude(),
+                        request.customerPhone())
                 .then(customerRepository.findById(customerId))
                 .doOnSuccess(customer -> {
                     log.info("Customer address updated successfully for customerId: " + customerId);
                     // Kafka 메시지 전송
-                    KafkaCustomerDto dto = new KafkaCustomerDto(customer.getCustomerId(), request.toEntity().getCustomerLatitude(),
-                            request.toEntity().getCustomerLongitude());
+                    KafkaCustomerDto dto = new KafkaCustomerDto(customer.getCustomerId(), request.customerLatitude(),
+                            request.customerLatitude());
                     customerProducer.sendCustomerInfo(dto, "customer_info_to_store");
                 })
                 .doOnError(e -> log.error("Error updating customer address for customerId: " + customerId, e));

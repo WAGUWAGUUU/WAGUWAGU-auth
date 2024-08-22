@@ -5,18 +5,12 @@ import com.example.wgwg_auth.domain.entity.Owner;
 
 public record OwnerRequest(
        String ownerName,
-       String ownerAddress,
-       double ownerLatitude,
-       double ownerLongitude,
        String ownerBusinessNumber
 ) {
-    public Owner toEntity(){
-        return Owner.builder()
-                .ownerName(ownerName)
-                .ownerAddress(ownerAddress)
-                .ownerLatitude(ownerLatitude)
-                .ownerLongitude(ownerLongitude)
-                .ownerBusinessNumber(ownerBusinessNumber)
-                .build();
-    }
+//    public Owner toEntity(){
+//        return Owner.builder()
+//                .ownerName(ownerName)
+//                .ownerBusinessNumber(ownerBusinessNumber)
+//                .build();
+//    }
 }

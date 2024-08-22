@@ -20,7 +20,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/riders")
+@RequestMapping("api/v1/auth/riders")
 public class RiderController {
     private final RiderService riderService;
     private final JwtUtil jwtUtil;

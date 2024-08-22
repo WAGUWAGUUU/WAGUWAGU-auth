@@ -9,7 +9,7 @@ public class HealthCheckController {
     public String healthCheck() {
         return "UP";
     }
-    @GetMapping("/api/v1/version")
+    @GetMapping("/api/v1/auth/version")
     public String version() {
         return "v1.0.1";
     }

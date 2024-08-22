@@ -15,12 +15,10 @@ public interface OwnerRepository  extends ReactiveCrudRepository<Owner,Long> {
     @Query("SELECT * FROM OWNERS WHERE OWNER_EMAIL = :ownerEmail")
     Flux<Owner> findByOwnerEmail(String ownerEmail);
 
-    @Query("UPDATE OWNERS SET OWNER_ADDRESS = :ownerAddress, " +
-            "OWNER_NAME = :ownerName, OWNER_LATITUDE = :ownerLatitude," +
-            "OWNER_LONGITUDE = :ownerLongitude, OWNER_BUSINESS_NUMBER = :ownerBusinessNumber" +
+    @Query("UPDATE OWNERS SET OWNER_NAME = :ownerName, " +
+            "OWNER_BUSINESS_NUMBER = :ownerBusinessNumber" +
             " WHERE OWNER_ID = :ownerId")
-    Mono<Owner> updateOwnerInfo(Long ownerId, String ownerName, String ownerAddress,
-                                      double ownerLatitude, double ownerLongitude,
+    Mono<Owner> updateOwnerInfo(Long ownerId, String ownerName,
                                 String ownerBusinessNumber);
 
 }
