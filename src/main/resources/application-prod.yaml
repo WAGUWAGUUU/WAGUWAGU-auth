@@ -22,6 +22,10 @@ spring:
       auto-offset-reset: earliest
   main:
     allow-bean-definition-overriding: true
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:sql/schema.sql
 
 kakao:
   client_id: f8609808f0ad80f284bc679eb3d80315
